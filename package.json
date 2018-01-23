@@ -4,7 +4,8 @@
   "description": "free ticket bot using luis",
   "main": "index.js",
   "scripts": {
-    "test": "npm test"
+    "test": "npm test",
+    "start": "npm start"
   },
   "keywords": [
     "luis",
