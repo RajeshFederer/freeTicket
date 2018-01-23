@@ -24,7 +24,7 @@ let bot = new builder.UniversalBot(connector, (session) => {
 let recognizer = new builder.LuisRecognizer(LUIS_MODEL_URL);
 bot.recognizer(recognizer);
 
-bot.dialog('welcome',(session)=>{
+bot.dialog('Greeting',(session)=>{
     session.send('Hello. I am connected');
 });
 
