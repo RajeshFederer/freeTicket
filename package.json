@@ -1,0 +1,21 @@
+{
+  "name": "freetticket",
+  "version": "1.0.0",
+  "description": "free ticket bot using luis",
+  "main": "index.js",
+  "scripts": {
+    "test": "npm test"
+  },
+  "keywords": [
+    "luis",
+    "ticket",
+    "booking"
+  ],
+  "author": "Rajeshwaran.P",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.18.2",
+    "botbuilder": "^3.13.1",
+    "express": "^4.16.2"
+  }
+}
