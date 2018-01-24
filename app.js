@@ -1,9 +1,8 @@
 'use strict';
 
 const builder = require('botbuilder');
-const express = require('express');
-const bodyParser = require('body-parser');
-const app = express();
+const restify = require('restify');
+const app = restify.createServer();
 
 const APP_ID = '6f76310c-32d6-47ab-bd25-906bfdfc09a1';
 const APP_PASSWORD = '@hO-m{X|KUp1h2*@';
