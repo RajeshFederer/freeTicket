@@ -5,9 +5,9 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const app = express();
 
-const APP_ID = 'fe61c76c-2325-48bc-acb5-bb8d89997e05';
-const APP_PASSWORD = 't|=.WKy]zUF+Vz!e';
-const LUIS_MODEL_URL = 'https://westus.api.cognitive.microsoft.com/luis/v2.0/apps/5f2aca06-714b-4ee2-9d5a-ff620e9044a3?subscription-key=7817b8e92a2f45738870896bd46edb39&verbose=true&timezoneOffset=0&q=';
+const APP_ID = '6f76310c-32d6-47ab-bd25-906bfdfc09a1';
+const APP_PASSWORD = '@hO-m{X|KUp1h2*@';
+const LUIS_MODEL_URL = 'https://westus.api.cognitive.microsoft.com/api/v2.0/apps/9fc3d559-6624-4900-ad38-283e0dfdbdb0?subscription-key=7817b8e92a2f45738870896bd46edb39&verbose=true&timezoneOffset=0&q=';
 
 // Create connector and listen for messages
 let connector = new builder.ChatConnector({
