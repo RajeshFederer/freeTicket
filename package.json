@@ -19,6 +19,7 @@
     "botbuilder": "^3.13.1",
     "botbuilder-azure": "^3.0.4",
     "express": "^4.16.2",
+    "moment": "^2.20.1",
     "restify": "^6.3.4"
   }
 }
