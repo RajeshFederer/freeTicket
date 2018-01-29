@@ -1,7 +1,10 @@
 'use strict';
 
 const restify = require('restify');
+const builder = require('botbuilder');
+const moment = require('moment');
 
+const recognizer = require('./lib/service/botConnector').recognizer;
 const connector = require('./lib/service/botConnector').connector;
 const bot = require('./lib/service/botConnector').bot;
 
