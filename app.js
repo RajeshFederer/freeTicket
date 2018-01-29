@@ -157,7 +157,7 @@ bot.dialog('getDateOfTravel',[(session, args) =>{
     }
 }, (session, results, callback) => {
     console.log('DATE RESP ', results.response);
-    if (moment(results.response).isBefore(moment())){ 
+    if (moment(results.response.resolution.start).isBefore(moment().startOf('d'))){ 
         session.replaceDialog('getDateOfTravel', { rePrompt: true });
     } else {
         session.userData.dateOfTravel = results.response;
