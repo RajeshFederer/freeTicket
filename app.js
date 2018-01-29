@@ -151,9 +151,9 @@ bot.dialog('/', intents);
 
 bot.dialog('getDateOfTravel',[(session, args) =>{
     if (args && args.rePrompt){
-        builder.Prompts.date(session, 'Can not book for past days. Please change the date?');
+        builder.Prompts.time(session, 'Can not book for past days. Please change the date?');
     } else {
-        builder.Prompts.date(session, 'Please tell me your date of travel?');
+        builder.Prompts.time(session, 'Please tell me your date of travel?');
     }
 }, (session, results, callback) => {
     console.log('DATE RESP ', results.response);
