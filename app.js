@@ -160,7 +160,7 @@ bot.dialog('getDateOfTravel',[(session, args) =>{
     if (moment(results.response.resolution.start).isBefore(moment().startOf('d'))){ 
         session.replaceDialog('getDateOfTravel', { rePrompt: true });
     } else {
-        session.userData.dateOfTravel = results.response;
+        session.userData.dateOfTravel = moment(results.response.resolution.start);
         session.endDialog();
     }
 }]);
