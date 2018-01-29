@@ -17,10 +17,7 @@ server.listen(process.env.port || process.env.PORT || 4500, function () {
 // Listen for messages from users 
 server.post('/api/messages', connector.listen());
 
-let intents = require('./lib/model/bot')();
-
-bot.dialog('/', () => {
-    let intents = new builder.IntentDialog({ recognizers: [recognizer] })
+let intents = new builder.IntentDialog({ recognizers: [recognizer] })
     .matches('Greeting', (session) => {
         session.send("Hey! I'm the Book Flight Ticket Bot. I can book / cancel you flight tickets");
         session.userData = session.userData || {};
@@ -194,7 +191,8 @@ bot.dialog('/', () => {
     .onDefault((session) => {
         session.send('Please Enter a valid Response .');
     });
-});
+
+bot.dialog('/', intents);
 
 bot.dialog('getOriginLocation', [(session, callback) =>{
     builder.Prompts.text(session, 'Please tell me your origin city?');
