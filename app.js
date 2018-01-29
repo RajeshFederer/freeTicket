@@ -156,6 +156,7 @@ bot.dialog('getDateOfTravel',[(session, args) =>{
         builder.Prompts.text(session, 'Please tell me your date of travel?');
     }
 }, (session, results, callback) => {
+    console.log('DATE RESP ', results.response);
     if (moment(results.response).isBefore(moment())){ 
         session.replaceDialog('getDateOfTravel', { rePrompt: true });
     } else {
