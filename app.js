@@ -57,11 +57,12 @@ let intents = new builder.IntentDialog({ recognizers: [recognizer] })
         if (travelClass){
             session.userData.travelClass = travelClass.entity;
         }
+        console.log('DATE '+ dateOfTravel);
         if (dateOfTravel && dateOfTravel.resolution && dateOfTravel.resolution.values && dateOfTravel.resolution.values.length && dateOfTravel.resolution.values[0].value){
             session.userData.dateOfTravel = dateOfTravel.resolution.values[0].value;
             return callback();
         } else {
-            builder.Prompts.time(session, 'Please tell me your date of travel?');
+            session.beginDialog('getDateOfTravel');
         }
     }, (session, results, callback) => {
         if (results.response) {
@@ -70,29 +71,23 @@ let intents = new builder.IntentDialog({ recognizers: [recognizer] })
         if(session.userData.originLocation){
             return callback();
         } else{
-            session.beginDialog('getOriginLocation');
+            session.beginDialog('getOriginLocation', callback);
         }
-    }, 
-    
+    },
     (session, results, callback) => {
-        if (results.response) {
-            session.userData.originLocation = results.response;
+        if (session.userData.destinationLocation){
+            return callback();
+        } else{
+            session.beginDialog('getDestinationLocation');
         }
-        session.beginDialog('getDestinationLocation');
-    }, (session, results, callback) => {
-        if (results.response) {
-            session.userData.destinationLocation = results.response;
-        }
+    }, (session, callback) => {
         if (session.userData.noOfTickets){
             return callback();
         } else {
-            builder.Prompts.number(session, 'How many tickets you want me to book?');
+            session.beginDialog('getNoOfTickets')            
         }
-    }, (session, results, callback) => {
+    }, (session, callback) => {
         console.log(session.userData);
-        if (results.response) {
-            session.userData.noOfTickets = results.response;
-        }
        /* if (session.userData.travelClass){
             return callback();
         } else {
@@ -113,45 +108,7 @@ let intents = new builder.IntentDialog({ recognizers: [recognizer] })
         }*/
         return callback();
     },  (session, results, callback) => {
-       /* if (results.response) {
-            session.userData.travelClass = results.response;
-        }*/
-        let flightList = [{
-            flightName: "Air Asia", 
-            logo : "https://akm-img-a-in.tosshub.com/indiatoday/images/story/201606/story_wikimedia,-mehdi-nazarinia_647_061316045520.jpg",
-            price : 4000,
-            departure : "10:30",
-            arraival : "13:30"
-        }, {
-            flightName: "Indigo", 
-            logo : "http://ste.india.com/sites/default/files/2016/05/24/491792-indigo.jpg",
-            price : 4000,
-            departure : "10:30",
-            arraival : "13:00"
-        }, {
-            flightName: "Jet Airways", 
-            logo : "http://ste.india.com/sites/default/files/2016/05/24/491792-indigo.jpg",
-            price : 4000,
-            departure : "10:00",
-            arraival : "13:30"
-        }];
-        let attachments = [];
-
-        for (var flight in flightList){
-            attachments.push (new builder.HeroCard(session)
-                .title(flightList[flight].flightName)
-                .subtitle("Rs."+ flightList[flight].price)
-                .text("Departure : " + flightList[flight].departure + "  Arraival : " +  flightList[flight].arraival)
-                .images([builder.CardImage.create(session, flightList[flight.logo])])
-                .buttons([
-                    builder.CardAction.imBack(session, flightList[flight].flightName, "Select")
-                ]));
-        }
-
-        var msg = new builder.Message(session);
-        msg.attachmentLayout(builder.AttachmentLayout.carousel)
-        msg.attachments(attachments);
-        session.send(msg);
+        session.beginDialog('showFlights');
     }])
 
     .matches('flights',[(session, args,callback) =>{
@@ -194,26 +151,83 @@ let intents = new builder.IntentDialog({ recognizers: [recognizer] })
 
 bot.dialog('/', intents);
 
-bot.dialog('getOriginLocation', [(session, callback) =>{
-    builder.Prompts.text(session, 'Please tell me your origin city?');
+bot.dialog('getDateOfTravel',[(session, args) =>{
+    if (args && args.rePrompt){
+        builder.Prompts.text(session, 'Can not book for past days. Please change the date?');
+    } else {
+        builder.Prompts.text(session, 'Please tell me your date of travel?');
+    }
 }, (session, results, callback) => {
-    session.endDialogWithResult(results);
+    if (moment(results.response).isBefore(moment())){ 
+        session.replaceDialog('getDateOfTravel', { rePrompt: true });
+    } else {
+        session.userData.dateOfTravel = results.response;
+        session.endDialog();
+    }
+}]);
+
+bot.dialog('getOriginLocation', [(session, args) =>{
+    if (args && args.rePrompt){
+        builder.Prompts.text(session, 'Origin and Destination can not be same. Please tell me your origin city?');
+    } else {
+        builder.Prompts.text(session, 'Please tell me your origin city?');
+    }
+}, (session, results, callback) => {
+    if (session.userData.destinationLocation && results.response == session.userData.destinationLocation){
+        session.replaceDialog('getOriginLocation', { rePrompt: true });
+    } else {
+        session.userData.originLocation = results.response;
+        session.endDialog();
+    }
 }]);
 
 bot.dialog('getDestinationLocation', [(session, args) =>{
-    if (session.userData.destinationLocation){
-        session.endDialogWithResult({});
-    } else {
-        if (args && args.rePrompt){
-            builder.Prompts.text(session, 'Origin and Destination can not be same. Please tell me your destination city?');
-        } else{
-            builder.Prompts.text(session, 'Please tell me your destination city?');
-        }
+    if (args && args.rePrompt){
+        builder.Prompts.text(session, 'Origin and Destination can not be same. Please tell me your destination city?');
+    } else{
+        builder.Prompts.text(session, 'Please tell me your destination city?');
     }
 }, (session, results, callback) => {
-    if(results.response == session.userData.originLocation){
+    if (results.response == session.userData.originLocation){
         session.replaceDialog('getDestinationLocation', { rePrompt: true });
-    } else{
-        session.endDialogWithResult(results);
+    } else {
+        session.userData.destinationLocation = results.response;
+        session.endDialog();
     }
 }]);
+
+bot.dialog('getNoOfTickets', [(session, args) =>{
+    if (args && args.rePrompt){
+        builder.Prompts.text(session, 'Minuimum is one ticket. How many tickets you want me to book?');
+    } else{
+        builder.Prompts.text(session, 'How many tickets you want me to book?');
+    }
+}, (session, results, callback) => {
+    if (results.response <= 0){
+        session.replaceDialog('getNoOfTickets', { rePrompt: true });
+    } else {
+        session.userData.noOfTickets = results.response;
+        session.endDialog();
+    }
+}]);
+
+bot.dialog('showFlights', (session) =>{
+    const flightList = require('./lib/config/data');
+    let attachments = [];
+    for (let flight in Object.keys(flightList)){
+        attachments.push (new builder.HeroCard(session)
+            .title(flightList[flight].flightName)
+            .subtitle("Rs."+ flightList[flight].price)
+            .text("Departure : " + flightList[flight].departure + "  Arraival : " +  flightList[flight].arraival)
+            .images([builder.CardImage.create(session, flightList[flight.logo])])
+            .buttons([
+                builder.CardAction.imBack(session, flightList[flight].flightName, "Select")
+            ]));
+    }
+    session.send('Please select the Flight below');
+    let msg = new builder.Message(session);
+    msg.attachmentLayout(builder.AttachmentLayout.carousel)
+    msg.attachments(attachments);
+    session.send(msg);
+    session.endDialog();
+});
