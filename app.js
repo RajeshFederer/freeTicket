@@ -36,7 +36,7 @@ let intents = new builder.IntentDialog({ recognizers: [recognizer] })
     })
     
     .matches('bookTicket', [(session, args,callback) =>{
-        console.log('TESTER ',args, session);
+        //console.log('TESTER ',args, session);
         let intent = args.intent;
         let dateOfTravel = builder.EntityRecognizer.findEntity(args.entities, 'builtin.datetimeV2.date');
         let noOfTickets = builder.EntityRecognizer.findEntity(args.entities, 'builtin.number');
@@ -151,9 +151,9 @@ bot.dialog('/', intents);
 
 bot.dialog('getDateOfTravel',[(session, args) =>{
     if (args && args.rePrompt){
-        builder.Prompts.text(session, 'Can not book for past days. Please change the date?');
+        builder.Prompts.date(session, 'Can not book for past days. Please change the date?');
     } else {
-        builder.Prompts.text(session, 'Please tell me your date of travel?');
+        builder.Prompts.date(session, 'Please tell me your date of travel?');
     }
 }, (session, results, callback) => {
     console.log('DATE RESP ', results.response);
@@ -215,7 +215,6 @@ bot.dialog('showFlights', (session) => {
     let attachments = [];
     
     Object.keys(flightList).forEach((flight)=>{
-        console.log('JESH ', flight, flightList[flight], Object.keys(flightList));
         attachments.push (new builder.HeroCard(session)
         .title(flightList[flight].flightName)
         .subtitle("Rs."+ flightList[flight].price)
@@ -226,7 +225,7 @@ bot.dialog('showFlights', (session) => {
         ]));
     });
     
-    session.send('Please select the Flight below');
+    session.send('Please select from below flights');
     let msg = new builder.Message(session);
     msg.attachmentLayout(builder.AttachmentLayout.carousel)
     msg.attachments(attachments);
