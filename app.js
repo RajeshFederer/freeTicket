@@ -84,7 +84,7 @@ let intents = new builder.IntentDialog({ recognizers: [recognizer] })
         if (session.userData.noOfTickets){
             return callback();
         } else {
-            session.beginDialog('getNoOfTickets')            
+            session.beginDialog('getNoOfTickets');            
         }
     }, (session, callback) => {
         session.beginDialog('showFlights');
@@ -166,7 +166,7 @@ bot.dialog('getDateOfTravel',[(session, args) =>{
 
 bot.dialog('getOriginLocation', [(session, args) =>{
     if (args && args.rePrompt){
-        builder.Prompts.text(session, 'Origin and Destination can not be same. Please tell me your origin city?');
+        builder.Prompts.text(session, 'Origin and Destination can not be same. Please change your origin city?');
     } else {
         builder.Prompts.text(session, 'Please tell me your origin city?');
     }
@@ -181,7 +181,7 @@ bot.dialog('getOriginLocation', [(session, args) =>{
 
 bot.dialog('getDestinationLocation', [(session, args) =>{
     if (args && args.rePrompt){
-        builder.Prompts.text(session, 'Origin and Destination can not be same. Please tell me your destination city?');
+        builder.Prompts.text(session, 'Origin and Destination can not be same. Please change    your destination city?');
     } else{
         builder.Prompts.text(session, 'Please tell me your destination city?');
     }
@@ -209,19 +209,22 @@ bot.dialog('getNoOfTickets', [(session, args) =>{
     }
 }]);
 
-bot.dialog('showFlights', (session) =>{
-    const flightList = require('./lib/config/data');
+bot.dialog('showFlights', (session) => {
+    let flightList = require('./lib/config/data');
     let attachments = [];
-    for (let flight in Object.keys(flightList)){
+    
+    Object.keys(flightList).forEach((flight)=>{
+        console.log('JESH ', flight, flightList[flight], Object.keys(flightList));
         attachments.push (new builder.HeroCard(session)
-            .title(flightList[flight].flightName)
-            .subtitle("Rs."+ flightList[flight].price)
-            .text("Departure : " + flightList[flight].departure + "  Arraival : " +  flightList[flight].arraival)
-            .images([builder.CardImage.create(session, flightList[flight.logo])])
-            .buttons([
-                builder.CardAction.imBack(session, flightList[flight].flightName, "Select")
-            ]));
-    }
+        .title(flightList[flight].flightName)
+        .subtitle("Rs."+ flightList[flight].price)
+        .text("Departure : " + flightList[flight].departure + "  Arraival : " +  flightList[flight].arraival)
+        .images([builder.CardImage.create(session, flightList[flight.logo])])
+        .buttons([
+            builder.CardAction.imBack(session, flightList[flight].flightName, "Select")
+        ]));
+    });
+    
     session.send('Please select the Flight below');
     let msg = new builder.Message(session);
     msg.attachmentLayout(builder.AttachmentLayout.carousel)
