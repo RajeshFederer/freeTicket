@@ -87,7 +87,8 @@ let intents = new builder.IntentDialog({ recognizers: [recognizer] })
             session.beginDialog('getNoOfTickets')            
         }
     }, (session, callback) => {
-        console.log(session.userData);
+        session.beginDialog('showFlights');
+        //console.log(session.userData);
        /* if (session.userData.travelClass){
             return callback();
         } else {
@@ -106,9 +107,6 @@ let intents = new builder.IntentDialog({ recognizers: [recognizer] })
             console.log("TEST", msg);
             session.send(msg);
         }*/
-        return callback();
-    },  (session, results, callback) => {
-        session.beginDialog('showFlights');
     }])
 
     .matches('flights',[(session, args,callback) =>{
