@@ -219,7 +219,7 @@ bot.dialog('showFlights', (session) => {
         .title(flightList[flight].flightName)
         .subtitle("Rs."+ flightList[flight].price)
         .text("Departure : " + flightList[flight].departure + "  Arraival : " +  flightList[flight].arraival)
-        .images([builder.CardImage.create(session, flightList[flight.logo])])
+        .images([new builder.CardImage.create(session).url(flightList[flight.logo])])
         .buttons([
             builder.CardAction.imBack(session, flightList[flight].flightName, "Select")
         ]));
