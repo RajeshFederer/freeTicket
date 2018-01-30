@@ -80,13 +80,13 @@ let intents = new builder.IntentDialog({ recognizers: [recognizer] })
         } else{
             session.beginDialog('getDestinationLocation');
         }
-    }, (session, callback) => {
+    }, (session, results, callback) => {
         if (session.userData.noOfTickets){
             return callback();
         } else {
             session.beginDialog('getNoOfTickets');            
         }
-    }, (session, callback) => {
+    }, (session, results, callback) => {
         session.beginDialog('showFlights');
         //console.log(session.userData);
        /* if (session.userData.travelClass){
